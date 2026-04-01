@@ -1,3 +1,29 @@
+Claude Code's source just leaked — I extracted its multi-agent orchestration system into an open-source framework that works with any LLM
+By now you've probably seen the news: Claude Code's full source code was exposed via source maps. 500K+ lines of TypeScript — the query engine, tool system, coordinator mode, team management, all of it.
+
+I studied the architecture, focused on the multi-agent orchestration layer — the coordinator that breaks goals into tasks, the team system, the message bus, the task scheduler with dependency resolution — and re-implemented these patterns from scratch as a standalone open-source framework.
+
+The result is open-multi-agent. No code was copied — it's a clean re-implementation of the design patterns. Model-agnostic — works with Claude and OpenAI in the same team.
+
+What the architecture reveals → what open-multi-agent implements:
+
+Coordinator pattern → auto-decompose a goal into tasks and assign to agents
+
+Team / sub-agent pattern → MessageBus + SharedMemory for inter-agent communication
+
+Task scheduling → TaskQueue with topological dependency resolution
+
+Conversation loop → AgentRunner (the model → tool → model turn cycle)
+
+Tool definition → defineTool() with Zod schema validation
+
+Unlike claude-agent-sdk which spawns a CLI process per agent, this runs entirely in-process. Deploy anywhere — serverless, Docker, CI/CD.
+
+MIT licensed, TypeScript, ~8000 lines.
+
+****************
+
+
 # Open Multi-Agent
 
 Build AI agent teams that work together. One agent plans, another implements, a third reviews — the framework handles task scheduling, dependencies, and communication automatically.
